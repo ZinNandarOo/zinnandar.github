@@ -1,0 +1,665 @@
+<!doctype html>
+	<html>
+		<head>
+		
+		<script src = "/assets/js/jquery.min.js"> </script>
+		<script src="/assets/js/bootbox.min.js"></script>
+		
+		</head>
+		
+			<body>
+			
+<div class="col-sm-9 col-sm-offset-3 col-lg-10 col-lg-offset-2 main">
+ <div class="panel" id="toppanel">
+  <div class="panel-heading">
+                        <span><h2>Shan Item Management</h2></span>
+                        </div>           
+    <!-- row1 -->
+    <div id="topbodypanel" style="padding:20px">
+<!--<div class="hide">
+  
+<a href="#" class="btn btn-color" style="margin-top:20px"><i class="icon-plus"></i><span style="font-size:1.2em"> Add New</span></a>
+
+</div>
+<!-- row2 -->
+<!-- <div class="hide">
+<div class="row" style="margin-bottom:30px;margin-top:30px">
+    <div class="col-lg-8 col-md-8 col-sm-12">
+		<input type="hidden" id="fromdt" name="fromdt" placeholder="Start Date" class="form-control datepicker">
+		<input type="hidden" id="todt" name="todt" placeholder="End Date" class="form-control datepicker">
+        <input type="text" id="keyword" name="keyword" placeholder="Email, Name or UserID" class="form-control" style="width: 100%" autocomplete="off" >
+    </div>
+    <div class="col-lg-4 col-md-4 col-sm-12">
+        <button class="btn btn-md btn-primary btnsearch">
+            <i class="icon-search"></i> Search
+        </button>
+    </div>
+</div>
+</div>-->
+<!-- row3 -->
+
+<div class="row">
+        <div class="col-xs-12">
+                
+            <div class="table-header">
+                Results for "Shan Item"
+            </div>
+            <br/>
+			
+			<div class = "addNewButton"> 
+				<input type = "button" value = "Add New" id = "new" class = "new">	
+				<!--<form>
+					<input type = 'text' id = 'text'>
+					<input type = 'button' value = 'click' id = 'click'>
+				</form>
+				-->
+			</div>
+
+			
+            <div class="table-responsive">
+                <table id="userreport_dt" class="table table-striped table-bordered table-hover" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th>Item ID</th>
+                            <th>Item Name</th>
+                            <th>Item Currency</th>
+                            <th>Item Cost</th>
+                            <th>Item Data Frame Count</th>
+                            <th>Item Data Thumb Frame</th>
+                            <th>Item Data Speed</th>
+                            <th>Item Sort Order</th>
+							<th></th>
+							<th></th>
+							<th>Item Status</th>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                       
+						<% for(var i = 0; i < data.length;i++){ %>
+						<tr>
+							<td> <%= data[i].item_id %> </td>
+							<td> <%= data[i].item_name%> </td>
+							<td> <select id = "selectCur" class = "selectCur">
+							<% var cur = data[i].item_currency %>
+							<% if(cur == null){ %>									
+									<option selected>(NULL)</option>
+									<option>credit</option>
+									<option>diamond</option>
+									<option>gcoin</option>
+									<option>token</option>									
+								<% }else if(cur == "credit"){%>
+									<option>(NULL)</option>
+									<option selected>credit</option>
+									<option>diamond</option>
+									<option>gcoin</option>
+									<option>token</option>
+								<% }else if(cur == "diamond"){%>
+									<option>(NULL)</option>
+									<option>credit</option>
+									<option selected>diamond</option>
+									<option>gcoin</option>
+									<option>token</option>
+								<% }else if(cur == "gcoin"){%>
+									<option>(NULL)</option>
+									<option>credit</option>
+									<option>diamond</option>
+									<option selected>gcoin</option>
+									<option>token</option>
+								<% }else if(cur == "token"){%>
+									<option>(NULL)</option>
+									<option>credit</option>
+									<option>diamond</option>
+									<option>gcoin</option>
+									<option selected>token</option>
+									<% }%>
+									</select></td>
+							<td> <%= data[i].item_cost %> </td>
+							<td> <%= data[i].item_data_frame_count %> </td>
+							<td> <%= data[i].item_data_thumb_frame %> </td>
+							<td> <%= data[i].item_data_speed %> </td>
+							<td> <%= data[i].item_sort_order %> </td>
+							<td> <input class="edit" type="button" value="Edit" id="btnEdit" data-toggle="modal" data-target="#itemData" onclick="loadItemData($(this))" /></td>
+							<td> <input class="delete" type="button" value="Delete" id="btnDelete" data-toggle="modal" data-target="#DeleteItemData" onclick = "askPermission($(this))"/></td>
+							<td> <select id = "select_status" class = "select_status">
+							<%var status = data[i].item_status %> 
+							<%if(status == null){ %>
+									<option selected>(NULL)</option>
+									<option>active</option>
+									<option>inactive</option>
+								<% }else if(status == "active"){ %>	
+									<option>(NULL)</option>
+									<option selected>active</option>
+									<option>inactive</option>
+								<% }else if(status == "inactive"){ %>	
+									<option>(NULL)</option>
+									<option>active</option>
+									<option selected>inactive</option>
+								<% } %>
+							</select>
+							</td>
+						</tr>
+						<% } %>
+					</tbody>
+                    
+                    <tfoot>
+						
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+</div>		
+</div>
+</div>		
+</div>	
+
+	
+		
+<!-- For 'Add New' Button-->
+<div class = "form_new" style = "display:none">	
+	<form class = "addForm">
+	<table>
+		<tr>		
+			<td> <label> Item Name </label> </td>
+			<td> <input type = "text" id = "item_name" class = "item_name"> </td>		
+		</tr>
+		<tr>		
+			<td> <label> Item Currency </label> </td>
+			<td> <select id = "item_currency" class = "item_currency">
+				<option> (NULL) </option>
+				<option> credit </option>
+				<option> diamond </option>
+				<option> gcoin </option>
+				<option> token </option>
+			</select>
+			</td>
+		</tr>
+		<tr>		
+			<td><label> Item Cost </label></td>
+			<td><input type = "text" id = "item_cost" class = "item_cost"></td>	
+		</tr>
+		<tr>		
+			<td><label> Item Data Frame Count </label></td>
+			<td><input type = "text" id = "item_data_frame_count" class = "item_data_frame_count"></td>		
+		</tr>
+		<tr>		
+			<td><label> Item Data Thumb Frame </label></td>
+			<td><input type = "text" id = "item_data_thumb_frame" class = "item_data_thumb_frame"></td>		
+		</tr>
+		<tr>		
+			<td><label> Item Data Speed </label></td>
+			<td><input type = "text" id = "item_data_speed" class = "item_data_speed"></td>		
+		</tr>
+		<tr>		
+			<td><label> Item Sort Order </label></td>
+			<td><input type = "text" id = "item_sort_order" class = "item_sort_order"></td>		
+		</tr>
+		<tr>		
+			<td><label> Item Status </label></td>
+			<td><select id = "selectStatus" class = "selectStatus">
+				<option> (NULL) </option>
+				<option> active </option>
+				<option> inactive </option>
+			</select>
+			</td>		
+		</tr>
+	</table>
+	</form>	
+</div>
+
+
+ <% var item_id; %>
+ <!--For 'Edit' button-->
+<div class="modal fade" id="itemData" tabindex="-1" role="dialog" 
+     aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <button type="button" class="close" 
+                   data-dismiss="modal">
+                       <span aria-hidden="true">&times;</span>
+                       <span class="sr-only">Close</span>
+                </button>
+                <h4 class="modal-title" id="myModalLabel">
+                    Edit Item
+                </h4>
+            </div>
+            
+            <!-- Modal Body -->
+            <div class="modal-body">
+                
+                <form class="form-horizontal" role="form">
+                  <div class="form-group">
+                    <label  class="col-sm-2 control-label"
+                              for="banStartDatePicker">Item Name </label>
+                    <div class="col-sm-10">
+                        <div class="divName" id="divName">
+                            <input type="text" id="textName" class="textName" name = "item_name" />
+                        </div>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label  class="col-sm-2 control-label"
+                              for="banEndDatePicker">Item Currency </label>
+                    <div class="col-sm-10">
+                        <div class="divCurrency" id="divCurrency">
+                            <select id = "selectCurrency">
+								<option value = "0">(NULL) </option>
+								<option value = "1"> credit </option>
+								<option value = "2"> diamond </option>
+								<option value = "3"> gcoin </option>
+								<option value = "4"> token </option>
+							</select>
+                        </div>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label  class="col-sm-2 control-label"
+                              for="banReason"> Item Cost </label>
+                    <div class="col-sm-10">
+                        <div class="divCost" id="divCost">
+                            <input type = "text" id = "textCost" class = "textCost">
+                        </div>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label  class="col-sm-2 control-label"
+                              for="banRemark"> Frame Count </label>
+                    <div class="col-sm-10">
+                        <div class="divFrameCount" id="divFrameCount">
+                            <input type="text" id="textFrameCount" class="textFrameCount"/>
+                        </div>
+                    </div>
+                  </div>
+				  <div class="form-group">
+                    <label  class="col-sm-2 control-label"
+                              for="banRemark"> Thumb Frame </label>
+                    <div class="col-sm-10">
+                        <div class="divThumbFrame" id="divThumbFrame">
+                            <input type="text" id="textThumbFrame" class="textThumbFrame"/>
+                        </div>
+                    </div>
+                  </div>
+				  <div class="form-group">
+                    <label  class="col-sm-2 control-label"
+                              for="banRemark"> Item Speed </label>
+                    <div class="col-sm-10">
+                        <div class="divSpeed" id="divSpeed">
+                            <input type="text" id="textSpeed" class="textSpeed"/>
+                        </div>
+                    </div>
+                  </div>
+				  <div class="form-group">
+                    <label  class="col-sm-2 control-label"
+                              for="banRemark"> Item Sort Order </label>
+                    <div class="col-sm-10">
+                        <div class="divSortOrder" id="divSortOrder">
+                            <input type="text" id="textSortOrder" class="textSortOrder"/>
+                        </div>
+                    </div>
+                  </div>
+				  <div class="form-group">
+                    <label  class="col-sm-2 control-label"
+                              for="banRemark"> Item Status </label>
+                    <div class="col-sm-10">
+                        <div class="divStatus" id="divStatus">
+                            <select id="selectStatus">
+								<option value = "0"> (NULL) </option>
+								<option value = "1"> active </option>
+								<option value = "2"> inactive </option>
+							</select>
+                        </div>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <div class="col-sm-offset-2 col-sm-10">
+                      <button type="submit" id="btnEditSave" class="btn btn-default" onclick = 'saveEditedItem(item_id)'>Save</button>
+                      <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div>
+                  </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--For 'Delete' button-->
+<div class="modal fade" id="DeleteItemData" tabindex="-1" role="dialog" 
+     aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <button type="button" class="close" 
+                   data-dismiss="modal">
+                       <span aria-hidden="true">&times;</span>
+                       <span class="sr-only">Close</span>
+                </button>
+                <h4 class="modal-title" id="myModalLabel">
+                    Delete Item
+                </h4>
+            </div>
+            
+            <!-- Modal Body -->
+            <div class="modal-body">
+                
+                <form class="form-horizontal" role="form">
+                  <div class="form-group">
+                    <p>Are you sure you want to delete this row? </p>
+                  </div>            
+                      			 			  
+				  <div class="form-group">
+                    <div class="col-sm-offset-2 col-sm-10">
+                      <button type="submit" id="btnDelete" class="btn btn-default" onclick = 'deleteItemData(item_id)'>Delete</button>
+                      <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div>
+                  </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
+<script src="/assets/js/fnReloadAjax.js"></script>
+<script src="/assets/js/jquery.dataTables.min.js"></script>
+
+
+<script>
+
+//declare the dataTable
+var table;
+	$(document).ready(function(){
+		table = $('#userreport_dt').DataTable({
+			"sPaginationType": "full_numbers",   //for paging 
+			"bStateSave": true,		
+			"fnPageChange":true     //for refresh the DataTable after adding,editing,deleting	
+		});			
+	});
+	
+//For testing
+/*$(document).ready(function(){
+	$('#click').on('click',function(){
+		$('#text').val('Enter name');
+	});
+});
+*/
+
+	
+//For 'delete' button in table
+/*
+$(document).ready(function(){
+	
+		$('.delete').on('click',function(){
+								
+			var item_id;
+			$(this).closest('tr').find('td:first-child').each(function(){    //get the item_id when clicking the 'delete' button
+				item_id = $(this).text();
+				});
+				
+			
+			$.ajax({
+					type: "POST",
+					url : "/user/item_delete",
+					data: {id:item_id}
+					})
+					   .done(function(msg){
+						});
+		
+			//var data = table.row($(this).parents('tr')).data();
+			var dialog = bootbox.dialog({
+				message: "Are you sure you want to delete item_id:" + item_id +"?",
+				closeButton:false,
+				buttons:{
+				
+					Delete:{
+							className:"btn_delete",
+							callback:function(){
+								window.location.reload('/user/item');								
+							}							
+						},
+					Cancel: {
+							className: "btn_cancel",
+							callback:function(){
+								//this.close();
+							}
+						}
+					}
+				});
+		});
+});	
+*/		
+		
+		
+
+
+//For 'Add New' button
+$(document).ready(function(){
+	$('.new').on('click',function(){
+		var name;
+		var currency;
+		var cost;
+		var frame_count;
+		var thumb_frame;
+		var speed;
+		var sort_order;
+		var status;			
+			
+		var dialog= bootbox.dialog({
+			message: $(".form_new").html(),
+			buttons:{
+				Add:{
+						className:"btn_add",
+						callback:function(){					
+							
+							//get input data from bootbox dialog box
+							name = $('#item_name','.bootbox').val();  		
+							currency = $('#item_currency option:selected','.bootbox').text();
+							cost = $('#item_cost','.bootbox').val();
+							frame_count = $('#item_data_frame_count','.bootbox').val();
+							thumb_frame = $('#item_data_thumb_frame','.bootbox').val();
+							speed = $('#item_data_speed','.bootbox').val();
+							sort_order = $('#item_sort_order','.bootbox').val();
+							status = $('#selectStatus option:selected','.bootbox').text();
+										
+							
+							//'post' data information to the home.js
+							$.ajax({
+									type: "POST",
+									url : "/user/item_add",
+									data: {name:name,currency:currency,cost:cost,frame_count:frame_count,thumb_frame:thumb_frame,speed:speed,sort_order:sort_order,status:status }
+									})
+										.done(function(msg){												
+											});
+											//window.location.reload("/user/item");
+											
+						//alert('item_name' + name+','+currency+','+cost+','+frame_count+','+thumb_frame+','+speed+','+sort_order+','+status);
+						}
+						
+					},
+				Cancel:{
+							className: "btn_reject",
+							callback:function(){
+								alert("Did you cancel me?");
+							}					
+						}
+					}
+		});		
+	});
+});
+
+
+
+//For 'Edit' button
+function loadItemData(e)
+{		
+		
+		var item_name;
+		var item_currency;
+		var item_cost;
+		var item_frame_count;
+		var item_thumb_frame;
+		var item_speed;
+		var item_sort_order;
+		var item_status;		
+		
+		item_id = $(e).closest('tr').find('td:first-child').text();
+		
+		item_name = $(e).closest('tr').find('td:nth-child(2)').text();
+		$('.divName #textName').val(item_name);	
+		
+		item_currency = $(e).closest('tr').find('td:nth-child(3) option:selected').text();
+		$('.divCurrency #selectCurrency option:first').text(item_currency);
+				
+		item_cost = $(e).closest('tr').find('td:nth-child(4)').text();
+		$('.divCost #textCost').val(item_cost);
+		
+		item_frame_count = $(e).closest('tr').find('td:nth-child(5)').text();
+		$('.divFrameCount #textFrameCount').val(item_frame_count);
+		
+		item_thumb_frame = $(e).closest('tr').find('td:nth-child(6)').text();
+		$('.divThumbFrame #textThumbFrame').val(item_thumb_frame);
+		
+		item_speed = $(e).closest('tr').find('td:nth-child(7)').text();
+		$('.divSpeed #textSpeed').val(item_speed);
+		
+		item_sort_order = $(e).closest('tr').find('td:nth-child(8)').text();
+		$('.divSortOrder #textSortOrder').val(item_sort_order);
+		
+		item_status = $(e).closest('tr').find('td:nth-child(11) option:selected').text();
+		$('.divStatus #selectStatus option:first').text(item_status);		
+			
+		//e.preventDefault();
+		//alert(item_id + ',item_name' + item_name + ','+item_currency + ','+item_status);
+}
+		
+//For 'Save' button in 'Edit' modal		
+function saveEditedItem(item_id)
+{
+		var name;
+		var currency;
+		var cost;
+		var frame_count;
+		var thumb_frame;
+		var speed;
+		var sort_order;
+		var status;
+		
+		name = $('#itemData #textName').val();
+		var itemName = name.replace(/\s/g, '');
+		currency = $('#itemData #selectCurrency option:selected').text();
+		cost = $('#itemData #textCost').val();
+		frame_count = $('#itemData #textFrameCount').val();
+		thumb_frame = $('#itemData #textThumbFrame').val();
+		speed = $('#itemData #textSpeed').val();
+		sort_order = $('#itemData #textSortOrder').val();
+		status = $('#itemData #selectStatus option:selected').text();
+		
+		
+		$.ajax({
+				type: "POST", 
+				url : "/user/item_edit",
+				data: {id:item_id,name:itemName,currency:currency,cost:cost,frame_count:frame_count,thumb_frame:thumb_frame,speed:speed,sort_order:sort_order,status:status }
+					
+				})
+					.done(function(msg){
+						grid.getDataTable().ajax.reload(); 
+						});
+					
+		
+		//alert(item_id+"input Name " + name + ','+currency + ','+cost+','+frame_count+','+thumb_frame+','+speed+','+sort_order+','+status);
+}
+
+//For 'Delete' button
+function askPermission(e)
+{
+	item_id = $(e).closest('tr').find('td:first-child').text();
+	//console.log("askPermission" + item_id);
+}
+
+//For 'Delete' button in 'Delete' modal
+function deleteItemData(id)
+{	
+	
+	$.ajax({
+			type: "POST",
+			url : "/user/item_delete",
+			data: {id:id}
+			})
+				.done(function(msg){
+					
+				});
+				//window.location.reload('/user/item');				
+	//alert("delete Function" + id);
+}
+
+
+
+
+//For 'edit' button		
+/*$(document).ready(function(){
+	$('.edit').on('click',function(){
+		var item_name;
+		var item_currency;
+		var item_cost;
+		var item_frame_count;
+		var item_thumb_frame;
+		var item_speed;
+		var item_sort_order;
+		var item_status;	
+		
+		//get item_name,currency,cost,etc  when clicking the 'edit' button		
+		
+		//$("#item_name",".bootbox").val(name);
+		$('.item_name').val(name);
+		$('.item_currency').val(currency);
+		$('.item_cost').val(cost);
+		$('.item_data_frame_count').val(frame_count);
+		$('.item_data_thumb_frame').val(thumb_frame);
+		$('.item_data_speed').val(speed);
+		$('.item_sort_order').val(sort_order);
+		$('.item_status').val(status);
+		
+		/*$.ajax({
+					type: 'POST',
+					url : '/user/item_edit',
+					data: {id: item_id}
+				})
+				.done(function(msg){
+			}
+		
+		//show bootbox dialog box with form type
+		var dialog = bootbox.dialog({	
+			message:$(".form_edit").html(),
+			buttons:{
+				Change:{
+							className:"btn_change",
+							callback:function(){
+								window.location.reload('/user/item');
+								alert("name" + name + ",currency" + currency );
+								
+								/*item_name = $('#item_name','.bootbox').val();
+								item_currency = $('#item_currency','.bootbox').val();
+								item_cost = $('#item_cost','.bootbox').val();
+								item_frame_count = $('#item_data_frame_count','.bootbox').val();
+								item_thumb_frame = $('#item_data_thumb_frame','.bootbox').val();
+								item_speed = $('#item_data_speed','.bootbox').val();
+								item_sort_order = $('#item_sort_order','.bootbox').val();
+								item_status = $('#item_status','.bootbox').val();						
+							}	
+						},
+				Cancel:{
+							className: "btn_canc",
+							callback:function(){
+								alert("Did you cancel me?");
+							}				
+						}
+					}
+		});			
+	});	
+});		
+*/		
+
+</script>
